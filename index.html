@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Adminer • MySQL Database Manager</title>
+    <title>WordPress + Adminer • MySQL Database Manager</title>
     <style>
         * {
             margin: 0;
@@ -12,406 +12,664 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: #f1f5f9;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a472a 0%, #2a6230 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* Top bar */
-        .top-bar {
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
             background: white;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
             justify-content: space-between;
-            gap: 1rem;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-            z-index: 10;
-        }
-
-        .logo-area {
-            display: flex;
             align-items: center;
-            gap: 0.75rem;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .logo {
-            font-weight: 700;
-            font-size: 1.35rem;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        .logo h1 {
+            font-size: 1.8em;
+            background: linear-gradient(135deg, #1a472a, #2e7d32);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
 
-        .badge {
-            background: #eef2ff;
-            color: #1e40af;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 500;
+        .logo p {
+            color: #666;
+            font-size: 0.85em;
         }
 
-        .url-controls {
+        .mode-badge {
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .mode-wp {
+            background: #21759b;
+            color: white;
+        }
+
+        .mode-adminer {
+            background: #e67e22;
+            color: white;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+        }
+
+        .mode-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .mode-btn.active {
+            background: #1a472a;
+            color: white;
+        }
+
+        .mode-btn.adminer-active {
+            background: #e67e22;
+            color: white;
+        }
+
+        /* URL Params Bar */
+        .params-bar {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 12px 20px;
+            margin-bottom: 25px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 0.75rem;
-            background: #f8fafc;
-            padding: 0.4rem 0.8rem;
-            border-radius: 40px;
+            justify-content: space-between;
+            gap: 15px;
+            font-size: 0.85em;
         }
 
-        .param-badge {
+        .param-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .param-tag {
+            background: #e9ecef;
+            padding: 4px 12px;
+            border-radius: 20px;
             font-family: monospace;
-            font-size: 0.75rem;
-            background: #e2e8f0;
-            padding: 0.2rem 0.5rem;
-            border-radius: 16px;
-            color: #0f172a;
+        }
+
+        .param-tag strong {
+            color: #1a472a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
         }
 
         button {
-            background: none;
+            padding: 6px 12px;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.8rem;
-            padding: 0.3rem 0.8rem;
-            border-radius: 24px;
-            background: #eef2ff;
-            color: #1e3a8a;
-            transition: all 0.2s ease;
-            font-weight: 500;
+            font-size: 0.8em;
+            transition: all 0.2s;
         }
 
-        button:hover {
-            background: #e0e7ff;
-            transform: scale(0.97);
-        }
-
-        .primary-btn {
-            background: #1e3a8a;
+        .btn-primary {
+            background: #1a472a;
             color: white;
         }
-        .primary-btn:hover {
-            background: #1e40af;
+
+        .btn-primary:hover {
+            background: #2e7d32;
         }
 
-        .info-note {
-            font-size: 0.7rem;
-            color: #475569;
-            background: #f1f5f9;
-            padding: 0.2rem 0.6rem;
-            border-radius: 16px;
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
         }
 
-        /* iframe container */
-        .iframe-container {
-            flex: 1;
-            background: #e2e8f0;
-            position: relative;
-            overflow: auto;
+        /* Main Content */
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-height: 65vh;
+        }
+
+        .content-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .content-header h2 {
+            font-size: 1.3em;
+        }
+
+        .wp-header {
+            background: #21759b;
+            color: white;
+        }
+
+        .adminer-header {
+            background: #e67e22;
+            color: white;
         }
 
         iframe {
             width: 100%;
-            height: 100%;
+            height: 65vh;
             border: none;
             background: white;
         }
 
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,240,0.9);
+        /* Quick Actions */
+        .quick-actions {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .quick-actions h3 {
+            margin-bottom: 15px;
+            color: #1a472a;
+        }
+
+        .action-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Setup Guide */
+        .setup-guide {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .setup-guide h3 {
+            color: #1a472a;
+            margin-bottom: 15px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .step-number {
+            background: #1a472a;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(4px);
-            transition: opacity 0.2s;
-            pointer-events: none;
-            font-weight: 500;
-            color: #0f172a;
-            gap: 0.75rem;
-            z-index: 5;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+            font-size: 0.8em;
         }
 
-        .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid #cbd5e1;
-            border-top: 3px solid #1e3a8a;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        .step-content {
+            flex: 1;
+            font-size: 0.9em;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85em;
+        }
+
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 10px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
 
         footer {
-            font-size: 0.7rem;
             text-align: center;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-            padding: 0.4rem;
-            color: #334155;
+            color: white;
+            margin-top: 25px;
+            padding: 15px;
+            font-size: 0.8em;
         }
 
-        @media (max-width: 680px) {
-            .top-bar { flex-direction: column; align-items: stretch; }
-            .url-controls { justify-content: center; }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            z-index: 1000;
+            animation: fadeInOut 2s ease;
+            font-size: 0.85em;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+
+        @media (max-width: 700px) {
+            .header { flex-direction: column; text-align: center; }
+            .params-bar { flex-direction: column; }
+            .param-tags { justify-content: center; }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>📝 WordPress + 🗄️ Adminer</h1>
+                <p>MySQL Database Manager | wasmerio/adminer integration</p>
+            </div>
+            <div class="mode-selector">
+                <button id="modeWpBtn" class="mode-btn active">📄 WordPress</button>
+                <button id="modeAdminerBtn" class="mode-btn">🗄️ Adminer (MySQL)</button>
+            </div>
+        </div>
 
-<div class="top-bar">
-    <div class="logo-area">
-        <span class="logo">🐘 Adminer + Wasmer</span>
-        <span class="badge">MySQL · PostgreSQL · SQLite</span>
-    </div>
-    <div class="url-controls" id="urlControls">
-        <span class="param-badge" id="serverDisplay">server: —</span>
-        <span class="param-badge" id="usernameDisplay">username: —</span>
-        <span class="param-badge" id="dbDisplay">db: —</span>
-        <button id="resetParamsBtn" title="Clear URL parameters and reload default">⟳ Reset</button>
-        <button id="copyUrlBtn" class="primary-btn">📋 Copy shareable link</button>
-    </div>
-    <div class="info-note">
-        ⚡ auto-login via URL params ?server=&user=&db=&password=
-    </div>
-</div>
+        <div class="params-bar">
+            <div class="param-tags">
+                <span class="param-tag"><strong>🔌 Host:</strong> <span id="dbHost">mysql</span></span>
+                <span class="param-tag"><strong>👤 User:</strong> <span id="dbUser">wordpress</span></span>
+                <span class="param-tag"><strong>🔑 Pass:</strong> <span id="dbPass">••••••••</span></span>
+                <span class="param-tag"><strong>🗄️ DB:</strong> <span id="dbName">wordpress</span></span>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-secondary" onclick="copyShareableLink()">📋 Share Link</button>
+                <button class="btn-primary" onclick="resetParams()">⟳ Reset</button>
+            </div>
+        </div>
 
-<div class="iframe-container">
-    <div id="loadingOverlay" class="loading-overlay" style="display: flex;">
-        <div class="spinner"></div>
-        <span>Launching Adminer (wasmerio/adminer) …</span>
-    </div>
-    <iframe id="adminerFrame" title="Adminer Database Manager" src="about:blank"></iframe>
-</div>
-<footer>
-    🔐 Adminer dashboard from <strong>wasmerio/adminer</strong> • Works with MySQL, PostgreSQL, SQLite • Credentials are never stored, only used in URL fragment.
-</footer>
+        <div class="main-content">
+            <div id="contentHeader" class="content-header wp-header">
+                <h2 id="headerTitle">📄 WordPress Site</h2>
+                <button id="openNewTabBtn" class="btn-primary" onclick="openInNewTab()">🔗 Open in New Tab</button>
+            </div>
+            <iframe id="mainFrame" src="about:blank" title="Content"></iframe>
+        </div>
 
-<script>
-    (function() {
-        // --------------------------------------------------------------
-        // CONFIG: Adminer endpoint (official wasmerio/adminer demo or self-hosted)
-        // We use the public Wasmer Edge / Adminer demo that supports ?server= etc.
-        // This endpoint is the one from wasmerio/adminer running on Wasmer Edge.
-        // It supports magic autologin via environment, but for URL params we use standard Adminer login prefills.
-        // For maximum compatibility: we use the official AdminerEvo + wasmer plugin hosted instance.
-        // --------------------------------------------------------------
-        const ADMINER_BASE = "https://adminer.wasmer.app/";   // wasmerio/adminer live instance (supports ?username=&db=&server=)
-        // fallback: if the above is blocked, we use a reliable public adminer instance (but we prefer wasmer official)
-        // But note: the repo says wasmer run . --net starts adminer, but they also provide a hosted version.
-        // To be safe: we use the exact same UI as the repo + support URL parameters.
-        
-        // Because the official wasmer adminer instance uses standard Adminer login parameters:
-        // ?server=host&username=root&db=mydb&password=secret
-        
-        let currentParams = {
-            server: '',
-            username: '',
-            password: '',
-            db: ''
+        <div class="quick-actions">
+            <h3>⚡ Quick Actions</h3>
+            <div class="action-grid">
+                <button class="btn-primary" onclick="copyDockerCommand()">🐳 Copy Docker Command</button>
+                <button class="btn-primary" onclick="showCredentials()">📋 Show Credentials</button>
+                <button class="btn-secondary" onclick="toggleGuide()">📖 Toggle Setup Guide</button>
+            </div>
+        </div>
+
+        <div id="setupGuide" class="setup-guide">
+            <h3>🚀 Quick Setup (2 minutes)</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <strong>Start WordPress + MySQL with Docker:</strong>
+                    <pre><code>docker run --name mysql-wp -e MYSQL_ROOT_PASSWORD=rootpass -e MYSQL_DATABASE=wordpress -e MYSQL_USER=wordpress -e MYSQL_PASSWORD=wp123 -p 3306:3306 -d mysql:8
+
+docker run --name wordpress -e WORDPRESS_DB_HOST=host.docker.internal:3306 -e WORDPRESS_DB_USER=wordpress -e WORDPRESS_DB_PASSWORD=wp123 -e WORDPRESS_DB_NAME=wordpress -p 8080:80 -d wordpress:latest
+
+docker run --name adminer -p 8081:8080 -d adminer:latest</code></pre>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <strong>Access WordPress:</strong> <code>http://localhost:8080</code> (complete 5-min install)
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <strong>Use URL parameters to auto-configure:</strong>
+                    <pre><code># For WordPress (just shows WP)
+?wp
+
+# For Adminer with auto-login
+?adminer&host=localhost&user=root&password=secret&db=mydb
+
+# Full example
+?adminer&host=host.docker.internal&user=wordpress&password=wp123&db=wordpress</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🔗 URL params: <code>?wp</code> for WordPress | <code>?adminer&host=&user=&password=&db=</code> for Adminer</p>
+            <p>⚡ Built with wasmerio/adminer | Deploy on GitHub Pages</p>
+        </footer>
+    </div>
+
+    <script>
+        // Configuration
+        let currentMode = 'wordpress'; // 'wordpress' or 'adminer'
+        let dbConfig = {
+            host: 'mysql',
+            user: 'wordpress',
+            password: 'wordpress_password',
+            db: 'wordpress'
         };
 
-        // Helper: get URL parameters
+        // Default URLs (change these to your actual endpoints)
+        const WORDPRESS_URL = 'https://wordpress.org/showcase/';  // Demo URL, replace with your WP
+        const ADMINER_BASE = 'https://adminer.wasmer.app/';        // wasmerio/adminer live instance
+
+        // Parse URL parameters
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
-                server: params.get('server') || '',
-                username: params.get('username') || '',
-                password: params.get('password') || '',
-                db: params.get('db') || ''
+                mode: params.has('wp') ? 'wordpress' : (params.has('adminer') ? 'adminer' : null),
+                host: params.get('host') || params.get('server'),
+                user: params.get('user') || params.get('username'),
+                password: params.get('password') || params.get('pass'),
+                db: params.get('db') || params.get('database')
             };
         }
 
-        // Update UI badge display
-        function updateBadges() {
-            const serverSpan = document.getElementById('serverDisplay');
-            const userSpan = document.getElementById('usernameDisplay');
-            const dbSpan = document.getElementById('dbDisplay');
-            
-            serverSpan.innerText = `server: ${currentParams.server || '(localhost)'}`;
-            usernameSpan.innerText = `user: ${currentParams.username || '(root)'}`;
-            dbSpan.innerText = `db: ${currentParams.db || '(any)'}`;
-            
-            if (!currentParams.server && !currentParams.username && !currentParams.db) {
-                serverSpan.style.opacity = '0.7';
-                userSpan.style.opacity = '0.7';
-                dbSpan.style.opacity = '0.7';
-            } else {
-                serverSpan.style.opacity = '1';
-                userSpan.style.opacity = '1';
-                dbSpan.style.opacity = '1';
-            }
-        }
-
-        // Build Adminer login URL with pre-filled fields (works with AdminerEvo)
-        function buildAdminerUrl(params) {
-            // Adminer uses standard query parameters: auth[server], auth[username], auth[db], auth[password]
-            // Actually the wasmerio/adminer also respects simple ?server=&username=&db=&password=
-            // But to be robust: we construct the exact login redirect using GET parameters that Adminer understands.
-            // According to Adminer docs, you can use ?username=root&server=localhost&db=test
-            // and password is often POST, but for autologin we can also pass ?password=xxx (not recommended but works on local/development)
-            // We'll append them directly.
-            
-            const url = new URL(ADMINER_BASE);
-            if (params.server && params.server.trim() !== '') {
-                url.searchParams.set('server', params.server.trim());
-            }
-            if (params.username && params.username.trim() !== '') {
-                url.searchParams.set('username', params.username.trim());
-            }
-            if (params.db && params.db.trim() !== '') {
-                url.searchParams.set('db', params.db.trim());
-            }
-            if (params.password && params.password.trim() !== '') {
-                url.searchParams.set('password', params.password.trim());
-            }
-            
-            // Also add 'auth' array style for maximum compatibility
-            if (params.server) url.searchParams.set('auth[server]', params.server);
-            if (params.username) url.searchParams.set('auth[username]', params.username);
-            if (params.db) url.searchParams.set('auth[db]', params.db);
-            if (params.password) url.searchParams.set('auth[password]', params.password);
-            
-            return url.toString();
-        }
-
-        // Reload iframe with current parameters
-        function reloadAdminer() {
-            const iframe = document.getElementById('adminerFrame');
-            const overlay = document.getElementById('loadingOverlay');
-            
-            // Show loading
-            overlay.style.display = 'flex';
-            
-            const targetUrl = buildAdminerUrl(currentParams);
-            iframe.src = targetUrl;
-            
-            // Hide overlay after iframe loads + small delay
-            const onLoad = () => {
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 500);
-                iframe.removeEventListener('load', onLoad);
-            };
-            iframe.addEventListener('load', onLoad);
-            
-            // fallback: hide after 2.5 sec anyway
-            setTimeout(() => {
-                if (overlay.style.display !== 'none') overlay.style.display = 'none';
-            }, 2800);
-        }
-
-        // Update current params from URL, then refresh iframe and UI
-        function syncFromUrl() {
+        // Update from URL
+        function updateFromUrl() {
             const urlParams = getUrlParams();
-            currentParams = {
-                server: urlParams.server || '',
-                username: urlParams.username || '',
-                password: urlParams.password || '',
-                db: urlParams.db || ''
-            };
-            updateBadges();
-            reloadAdminer();
             
-            // also update browser URL bar without full reload (history replaceState)
-            const newUrl = new URL(window.location.href);
-            if (currentParams.server) newUrl.searchParams.set('server', currentParams.server);
-            else newUrl.searchParams.delete('server');
+            if (urlParams.mode) {
+                currentMode = urlParams.mode;
+            }
             
-            if (currentParams.username) newUrl.searchParams.set('username', currentParams.username);
-            else newUrl.searchParams.delete('username');
+            if (urlParams.host) dbConfig.host = urlParams.host;
+            if (urlParams.user) dbConfig.user = urlParams.user;
+            if (urlParams.password) dbConfig.password = urlParams.password;
+            if (urlParams.db) dbConfig.db = urlParams.db;
             
-            if (currentParams.password) newUrl.searchParams.set('password', currentParams.password);
-            else newUrl.searchParams.delete('password');
-            
-            if (currentParams.db) newUrl.searchParams.set('db', currentParams.db);
-            else newUrl.searchParams.delete('db');
-            
-            window.history.replaceState({}, '', newUrl.toString());
+            updateUI();
+            loadContent();
         }
-        
-        // Reset all params (clear URL and set defaults)
-        function resetAllParams() {
-            const emptyParams = { server: '', username: '', password: '', db: '' };
-            currentParams = emptyParams;
-            updateBadges();
+
+        // Update UI based on mode and config
+        function updateUI() {
+            // Update mode buttons
+            const wpBtn = document.getElementById('modeWpBtn');
+            const adminerBtn = document.getElementById('modeAdminerBtn');
+            const header = document.getElementById('contentHeader');
+            const headerTitle = document.getElementById('headerTitle');
             
-            // Clear all query params
+            if (currentMode === 'wordpress') {
+                wpBtn.classList.add('active');
+                adminerBtn.classList.remove('active');
+                adminerBtn.classList.remove('adminer-active');
+                header.className = 'content-header wp-header';
+                headerTitle.innerHTML = '📄 WordPress Site';
+            } else {
+                wpBtn.classList.remove('active');
+                adminerBtn.classList.add('active');
+                adminerBtn.classList.add('adminer-active');
+                header.className = 'content-header adminer-header';
+                headerTitle.innerHTML = '🗄️ Adminer - MySQL Database Manager';
+            }
+            
+            // Update parameter display
+            document.getElementById('dbHost').textContent = dbConfig.host || '(default)';
+            document.getElementById('dbUser').textContent = dbConfig.user || '(root)';
+            document.getElementById('dbName').textContent = dbConfig.db || '(any)';
+            
+            // Show password hint
+            const passSpan = document.getElementById('dbPass');
+            if (dbConfig.password) {
+                passSpan.textContent = '••••••••';
+                passSpan.title = dbConfig.password;
+            } else {
+                passSpan.textContent = '(none)';
+            }
+        }
+
+        // Load content in iframe
+        function loadContent() {
+            const iframe = document.getElementById('mainFrame');
+            
+            if (currentMode === 'wordpress') {
+                // WordPress mode - just load the WordPress URL
+                iframe.src = WORDPRESS_URL;
+            } else {
+                // Adminer mode - build URL with credentials
+                const adminerUrl = new URL(ADMINER_BASE);
+                
+                // Add credentials for auto-login
+                if (dbConfig.host) adminerUrl.searchParams.set('server', dbConfig.host);
+                if (dbConfig.user) adminerUrl.searchParams.set('username', dbConfig.user);
+                if (dbConfig.password) adminerUrl.searchParams.set('password', dbConfig.password);
+                if (dbConfig.db) adminerUrl.searchParams.set('db', dbConfig.db);
+                
+                // Also add auth array format for compatibility
+                if (dbConfig.host) adminerUrl.searchParams.set('auth[server]', dbConfig.host);
+                if (dbConfig.user) adminerUrl.searchParams.set('auth[username]', dbConfig.user);
+                if (dbConfig.password) adminerUrl.searchParams.set('auth[password]', dbConfig.password);
+                if (dbConfig.db) adminerUrl.searchParams.set('auth[db]', dbConfig.db);
+                
+                iframe.src = adminerUrl.toString();
+            }
+        }
+
+        // Switch mode
+        function setMode(mode) {
+            currentMode = mode;
+            updateUrlParams();
+            updateUI();
+            loadContent();
+        }
+
+        // Update URL parameters without reload
+        function updateUrlParams() {
+            const url = new URL(window.location.href);
+            // Clear existing mode params
+            url.searchParams.delete('wp');
+            url.searchParams.delete('adminer');
+            
+            // Set new mode
+            if (currentMode === 'wordpress') {
+                url.searchParams.set('wp', '');
+            } else {
+                url.searchParams.set('adminer', '');
+            }
+            
+            // Add database params if they exist
+            if (dbConfig.host && dbConfig.host !== 'mysql') {
+                url.searchParams.set('host', dbConfig.host);
+            }
+            if (dbConfig.user && dbConfig.user !== 'wordpress') {
+                url.searchParams.set('user', dbConfig.user);
+            }
+            if (dbConfig.password && dbConfig.password !== 'wordpress_password') {
+                url.searchParams.set('password', dbConfig.password);
+            }
+            if (dbConfig.db && dbConfig.db !== 'wordpress') {
+                url.searchParams.set('db', dbConfig.db);
+            }
+            
+            window.history.replaceState({}, '', url.toString());
+        }
+
+        // Reset to defaults
+        function resetParams() {
+            dbConfig = {
+                host: 'mysql',
+                user: 'wordpress',
+                password: 'wordpress_password',
+                db: 'wordpress'
+            };
+            currentMode = 'wordpress';
+            
             const cleanUrl = window.location.pathname;
             window.history.replaceState({}, '', cleanUrl);
-            reloadAdminer();
+            updateUI();
+            loadContent();
+            showToast('↺ Reset to default settings');
         }
-        
-        // Copy shareable link with current params
+
+        // Copy shareable link
         function copyShareableLink() {
             const url = new URL(window.location.href);
-            // sync params from currentParams to url
-            if (currentParams.server) url.searchParams.set('server', currentParams.server);
-            else url.searchParams.delete('server');
-            if (currentParams.username) url.searchParams.set('username', currentParams.username);
-            else url.searchParams.delete('username');
-            if (currentParams.password) url.searchParams.set('password', currentParams.password);
-            else url.searchParams.delete('password');
-            if (currentParams.db) url.searchParams.set('db', currentParams.db);
-            else url.searchParams.delete('db');
             
-            const link = url.toString();
-            navigator.clipboard.writeText(link).then(() => {
-                const toast = document.createElement('div');
-                toast.innerText = '✅ Link copied! Share with your team.';
-                toast.style.position = 'fixed';
-                toast.style.bottom = '50px';
-                toast.style.left = '50%';
-                toast.style.transform = 'translateX(-50%)';
-                toast.style.background = '#1e293b';
-                toast.style.color = 'white';
-                toast.style.padding = '8px 20px';
-                toast.style.borderRadius = '40px';
-                toast.style.fontSize = '0.85rem';
-                toast.style.zIndex = '999';
-                toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 2200);
-            }).catch(() => alert('Could not copy. Select URL manually.'));
+            // Ensure mode is set
+            if (currentMode === 'wordpress') {
+                url.searchParams.set('wp', '');
+                url.searchParams.delete('adminer');
+            } else {
+                url.searchParams.set('adminer', '');
+                url.searchParams.delete('wp');
+            }
+            
+            // Add credentials if they're custom
+            if (dbConfig.host && dbConfig.host !== 'mysql') {
+                url.searchParams.set('host', dbConfig.host);
+            }
+            if (dbConfig.user && dbConfig.user !== 'wordpress') {
+                url.searchParams.set('user', dbConfig.user);
+            }
+            if (dbConfig.password && dbConfig.password !== 'wordpress_password') {
+                url.searchParams.set('password', dbConfig.password);
+            }
+            if (dbConfig.db && dbConfig.db !== 'wordpress') {
+                url.searchParams.set('db', dbConfig.db);
+            }
+            
+            navigator.clipboard.writeText(url.toString());
+            showToast('🔗 Link copied! Share with your team');
         }
+
+        // Show credentials
+        function showCredentials() {
+            alert(`Database Credentials:\n\nHost: ${dbConfig.host}\nUser: ${dbConfig.user}\nPassword: ${dbConfig.password || '(none)'}\nDatabase: ${dbConfig.db}\n\nMode: ${currentMode === 'wordpress' ? 'WordPress' : 'Adminer'}`);
+        }
+
+        // Copy Docker command
+        function copyDockerCommand() {
+            const cmd = `# Start MySQL
+docker run --name mysql-wp \\
+  -e MYSQL_ROOT_PASSWORD=rootpass \\
+  -e MYSQL_DATABASE=wordpress \\
+  -e MYSQL_USER=wordpress \\
+  -e MYSQL_PASSWORD=${dbConfig.password} \\
+  -p 3306:3306 -d mysql:8
+
+# Start WordPress
+docker run --name wordpress \\
+  -e WORDPRESS_DB_HOST=host.docker.internal:3306 \\
+  -e WORDPRESS_DB_USER=${dbConfig.user} \\
+  -e WORDPRESS_DB_PASSWORD=${dbConfig.password} \\
+  -e WORDPRESS_DB_NAME=${dbConfig.db} \\
+  -p 8080:80 -d wordpress:latest
+
+# Start Adminer (for MySQL management)
+docker run --name adminer -p 8081:8080 -d adminer:latest
+
+# Access:
+# WordPress: http://localhost:8080
+# Adminer: http://localhost:8081?server=host.docker.internal&username=${dbConfig.user}&password=${dbConfig.password}&db=${dbConfig.db}`;
+            
+            navigator.clipboard.writeText(cmd);
+            showToast('🐳 Docker commands copied!');
+        }
+
+        // Open in new tab
+        function openInNewTab() {
+            const iframe = document.getElementById('mainFrame');
+            if (iframe.src && iframe.src !== 'about:blank') {
+                window.open(iframe.src, '_blank');
+            } else {
+                showToast('No content loaded yet');
+            }
+        }
+
+        // Toggle setup guide
+        function toggleGuide() {
+            const guide = document.getElementById('setupGuide');
+            if (guide.style.display === 'none') {
+                guide.style.display = 'block';
+                showToast('📖 Setup guide visible');
+            } else {
+                guide.style.display = 'none';
+                showToast('📖 Setup guide hidden');
+            }
+        }
+
+        // Show toast message
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // Event listeners
+        document.getElementById('modeWpBtn').addEventListener('click', () => setMode('wordpress'));
+        document.getElementById('modeAdminerBtn').addEventListener('click', () => setMode('adminer'));
         
-        // detect changes on load and when popstate (back/forward)
-        window.addEventListener('popstate', () => {
-            syncFromUrl();
-        });
+        // Initialize
+        updateFromUrl();
         
-        // manual reset
-        document.getElementById('resetParamsBtn')?.addEventListener('click', () => {
-            resetAllParams();
-        });
-        
-        document.getElementById('copyUrlBtn')?.addEventListener('click', () => {
-            copyShareableLink();
-        });
-        
-        // initial sync
-        syncFromUrl();
-        
-        // Extra: show quick example credentials for MySQL (common dev)
-        // Provide a little helper in console: you can use ?server=mysql&username=root&password=secret&db=testdb
-        console.log('🛢️ Adminer + Wasmer live preview | URL parameters: ?server=&username=&db=&password=');
-        console.log('Example: ?server=localhost&username=root&password=wasmedge123&db=testdb');
-        console.log('💡 For wasmerio/adminer demo, the backend expects a running MySQL instance. Use ?server= your_mysql_host');
-    })();
-</script>
+        // Console help
+        console.log('%c📝 WordPress + Adminer Manager', 'color: #1a472a; font-size: 14px; font-weight: bold;');
+        console.log('URL parameters:');
+        console.log('  ?wp                          - Show WordPress');
+        console.log('  ?adminer                     - Show Adminer');
+        console.log('  ?adminer&host=localhost      - Adminer with host');
+        console.log('  ?adminer&user=root&pass=123  - Adminer with credentials');
+        console.log('Example: ?adminer&host=host.docker.internal&user=wordpress&password=wp123&db=wordpress');
+    </script>
 </body>
 </html>
