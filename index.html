@@ -23,7 +23,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             background: white;
             border-radius: 20px;
@@ -48,13 +47,6 @@
         .logo p {
             color: #666;
             font-size: 0.85em;
-        }
-
-        .mode-badge {
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.9em;
         }
 
         .mode-selector {
@@ -83,7 +75,6 @@
             color: white;
         }
 
-        /* URL Params Bar */
         .params-bar {
             background: #f8f9fa;
             border-radius: 15px;
@@ -142,7 +133,6 @@
             color: white;
         }
 
-        /* Main Content */
         .main-content {
             background: white;
             border-radius: 20px;
@@ -159,10 +149,6 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
-        }
-
-        .content-header h2 {
-            font-size: 1.3em;
         }
 
         .wp-header {
@@ -182,26 +168,38 @@
             background: #f8f9fa;
         }
 
-        /* Info Banner for Local Setup */
-        .info-banner {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 12px 15px;
-            margin: 15px 20px;
-            border-radius: 8px;
+        .info-card {
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            height: 60vh;
+            background: #f8f9fa;
+            text-align: center;
+            padding: 40px;
         }
 
-        .info-banner code {
-            background: #fff;
-            padding: 4px 8px;
-            border-radius: 4px;
+        .info-card-inner {
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* Quick Actions */
+        .info-card h3 {
+            color: #21759b;
+            margin-bottom: 15px;
+        }
+
+        .info-card .url-box {
+            background: #e9ecef;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 15px 0;
+        }
+
         .quick-actions {
             background: white;
             border-radius: 20px;
@@ -221,7 +219,6 @@
             gap: 10px;
         }
 
-        /* Setup Guide */
         .setup-guide {
             background: white;
             border-radius: 20px;
@@ -323,21 +320,20 @@
         <div class="header">
             <div class="logo">
                 <h1>📝 WordPress + 🗄️ Adminer</h1>
-                <p>MySQL Database Manager | wasmerio/adminer integration</p>
+                <p>MySQL Database Manager | wasmerio/adminer style</p>
             </div>
             <div class="mode-selector">
-                <button id="modeWpBtn" class="mode-btn active">📄 WordPress</button>
+                <button id="modeWpBtn" class="mode-btn active">📄 WordPress Info</button>
                 <button id="modeAdminerBtn" class="mode-btn">🗄️ Adminer (MySQL)</button>
             </div>
         </div>
 
         <div class="params-bar">
             <div class="param-tags">
-                <span class="param-tag"><strong>🔌 Host:</strong> <span id="dbHost">mysql</span></span>
-                <span class="param-tag"><strong>👤 User:</strong> <span id="dbUser">wordpress</span></span>
-                <span class="param-tag"><strong>🔑 Pass:</strong> <span id="dbPass">••••••••</span></span>
-                <span class="param-tag"><strong>🗄️ DB:</strong> <span id="dbName">wordpress</span></span>
-                <span class="param-tag"><strong>📍 URL:</strong> <span id="wpUrl">http://localhost:8080</span></span>
+                <span class="param-tag"><strong>🔌 Host:</strong> <span id="dbHost">mysql.example.com</span></span>
+                <span class="param-tag"><strong>👤 User:</strong> <span id="dbUser">username</span></span>
+                <span class="param-tag"><strong>🔑 Pass:</strong> <span id="dbPass">••••••</span></span>
+                <span class="param-tag"><strong>🗄️ DB:</strong> <span id="dbName">database</span></span>
             </div>
             <div class="action-buttons">
                 <button class="btn-secondary" onclick="copyShareableLink()">📋 Share Link</button>
@@ -347,18 +343,23 @@
 
         <div class="main-content">
             <div id="contentHeader" class="content-header wp-header">
-                <h2 id="headerTitle">📄 WordPress Site</h2>
+                <h2 id="headerTitle">📄 WordPress Information</h2>
                 <button id="openNewTabBtn" class="btn-primary" onclick="openInNewTab()">🔗 Open in New Tab</button>
             </div>
-            
-            <!-- Info banner for WordPress mode -->
-            <div id="wpInfoBanner" class="info-banner" style="display: none;">
-                <span>⚠️</span>
-                <span>WordPress cannot be embedded in an iframe due to security restrictions. </span>
-                <button onclick="openInNewTab()" style="background: #21759b; color: white; padding: 4px 12px;">Click here to open WordPress →</button>
+            <div id="contentArea">
+                <iframe id="mainFrame" src="about:blank" title="Content" style="display: none;"></iframe>
+                <div id="infoCard" class="info-card">
+                    <div class="info-card-inner">
+                        <h3>📝 WordPress Setup Guide</h3>
+                        <p>WordPress requires a local installation. Use the Docker commands below to run it on your own machine.</p>
+                        <div class="url-box" id="wpUrlDisplay">http://localhost:8080</div>
+                        <button class="btn-primary" onclick="openWordPressTab()" style="margin-top: 10px;">🚀 Open WordPress →</button>
+                        <hr style="margin: 20px 0;">
+                        <p style="font-size: 0.85em; color: #666;">💡 <strong>Adminer</strong> works online! Switch to Adminer mode above to manage any MySQL database.</p>
+                        <p style="font-size: 0.8em; margin-top: 10px;">🔗 Use URL params: <code>?adminer&host=your-db-host&user=root&password=secret&db=mydb</code></p>
+                    </div>
+                </div>
             </div>
-            
-            <iframe id="mainFrame" src="about:blank" title="Content"></iframe>
         </div>
 
         <div class="quick-actions">
@@ -366,7 +367,7 @@
             <div class="action-grid">
                 <button class="btn-primary" onclick="copyDockerCommand()">🐳 Copy Docker Command</button>
                 <button class="btn-primary" onclick="showCredentials()">📋 Show Credentials</button>
-                <button class="btn-secondary" onclick="copyConnectionString()">🔗 Copy Adminer URL</button>
+                <button class="btn-secondary" onclick="copyAdminerUrl()">🔗 Copy Adminer URL</button>
                 <button class="btn-secondary" onclick="toggleGuide()">📖 Toggle Setup Guide</button>
             </div>
         </div>
@@ -409,7 +410,7 @@ docker run -d --name adminer --network wp-network \
             <div class="step">
                 <div class="step-number">2</div>
                 <div class="step-content">
-                    <strong>Access WordPress:</strong> Open <code>http://localhost:8080</code> in a new tab and complete the 5-minute installation.
+                    <strong>Access WordPress:</strong> Open <code>http://localhost:8080</code> and complete the 5-minute installation.
                 </div>
             </div>
 
@@ -425,22 +426,19 @@ http://localhost:8081?server=mysql-wp&username=wordpress&password=wp123&db=wordp
             <div class="step">
                 <div class="step-number">4</div>
                 <div class="step-content">
-                    <strong>Use this launcher with URL parameters:</strong>
-                    <pre><code># For WordPress mode (opens in new tab automatically)
-?wp
+                    <strong>Use this launcher with URL parameters (works online!):</strong>
+                    <pre><code># For Adminer with auto-login to your remote MySQL:
+https://melonix2871-maker.github.io/wasm-demo/?adminer&host=your-db-host.com&user=root&password=secret&db=mydb
 
-# For Adminer with auto-login
-?adminer&host=localhost&user=wordpress&password=wp123&db=wordpress
-
-# Full example with Docker setup
-?adminer&host=mysql-wp&user=wordpress&password=wp123&db=wordpress</code></pre>
+# Example with public test database:
+https://melonix2871-maker.github.io/wasm-demo/?adminer&host=db4free.net&user=demo&password=demo123&db=demo</code></pre>
                 </div>
             </div>
         </div>
 
         <footer>
-            <p>🔗 URL params: <code>?wp</code> for WordPress | <code>?adminer&host=&user=&password=&db=</code> for Adminer</p>
-            <p>⚡ Built with wasmerio/adminer | Deploy on GitHub Pages | WordPress opens in new tab due to iframe restrictions</p>
+            <p>🔗 URL params: <code>?adminer&host=&user=&password=&db=</code> for Adminer | WordPress runs locally via Docker</p>
+            <p>⚡ Adminer style from <a href="https://github.com/wasmerio/adminer" style="color: white;" target="_blank">wasmerio/adminer</a> | Deployed on GitHub Pages</p>
         </footer>
     </div>
 
@@ -448,14 +446,18 @@ http://localhost:8081?server=mysql-wp&username=wordpress&password=wp123&db=wordp
         // Configuration
         let currentMode = 'wordpress';
         let dbConfig = {
-            host: 'mysql-wp',
-            user: 'wordpress',
-            password: 'wp123',
-            db: 'wordpress'
+            host: '',
+            user: '',
+            password: '',
+            db: ''
         };
         
-        let wpUrl = 'http://localhost:8080';
-        let adminerBase = 'https://adminer.wasmer.app/';  // Fallback public instance
+        // Public Adminer instance (works online, supports any MySQL server)
+        // Using the official Adminer demo instance that allows external connections
+        const ADMINER_URL = 'https://adminer.org/';
+        // Alternative: https://demo.adminer.org/ - works the same
+        
+        let wpLocalUrl = 'http://localhost:8080';
 
         // Parse URL parameters
         function getUrlParams() {
@@ -465,8 +467,7 @@ http://localhost:8081?server=mysql-wp&username=wordpress&password=wp123&db=wordp
                 host: params.get('host') || params.get('server'),
                 user: params.get('user') || params.get('username'),
                 password: params.get('password') || params.get('pass'),
-                db: params.get('db') || params.get('database'),
-                wpUrl: params.get('wpUrl')
+                db: params.get('db') || params.get('database')
             };
         }
 
@@ -474,110 +475,82 @@ http://localhost:8081?server=mysql-wp&username=wordpress&password=wp123&db=wordp
         function updateFromUrl() {
             const urlParams = getUrlParams();
             
-            if (urlParams.mode) {
-                currentMode = urlParams.mode;
+            if (urlParams.mode === 'adminer') {
+                currentMode = 'adminer';
+            } else {
+                currentMode = 'wordpress';
             }
             
             if (urlParams.host) dbConfig.host = urlParams.host;
             if (urlParams.user) dbConfig.user = urlParams.user;
             if (urlParams.password) dbConfig.password = urlParams.password;
             if (urlParams.db) dbConfig.db = urlParams.db;
-            if (urlParams.wpUrl) wpUrl = urlParams.wpUrl;
             
             updateUI();
             loadContent();
         }
 
-        // Update UI based on mode
         function updateUI() {
             const wpBtn = document.getElementById('modeWpBtn');
             const adminerBtn = document.getElementById('modeAdminerBtn');
             const header = document.getElementById('contentHeader');
             const headerTitle = document.getElementById('headerTitle');
-            const wpInfoBanner = document.getElementById('wpInfoBanner');
-            const wpUrlSpan = document.getElementById('wpUrl');
+            const infoCard = document.getElementById('infoCard');
+            const iframe = document.getElementById('mainFrame');
+            const wpUrlSpan = document.getElementById('wpUrlDisplay');
             
-            wpUrlSpan.textContent = wpUrl;
+            wpUrlSpan.textContent = wpLocalUrl;
             
             if (currentMode === 'wordpress') {
                 wpBtn.classList.add('active');
                 adminerBtn.classList.remove('active');
                 adminerBtn.classList.remove('adminer-active');
                 header.className = 'content-header wp-header';
-                headerTitle.innerHTML = '📄 WordPress Site';
-                wpInfoBanner.style.display = 'flex';
+                headerTitle.innerHTML = '📄 WordPress Information';
+                infoCard.style.display = 'flex';
+                iframe.style.display = 'none';
             } else {
                 wpBtn.classList.remove('active');
                 adminerBtn.classList.add('active');
                 adminerBtn.classList.add('adminer-active');
                 header.className = 'content-header adminer-header';
                 headerTitle.innerHTML = '🗄️ Adminer - MySQL Database Manager';
-                wpInfoBanner.style.display = 'none';
+                infoCard.style.display = 'none';
+                iframe.style.display = 'block';
             }
             
             // Update parameter display
-            document.getElementById('dbHost').textContent = dbConfig.host || '(default)';
-            document.getElementById('dbUser').textContent = dbConfig.user || '(root)';
-            document.getElementById('dbName').textContent = dbConfig.db || '(any)';
+            document.getElementById('dbHost').textContent = dbConfig.host || '(set via URL)';
+            document.getElementById('dbUser').textContent = dbConfig.user || '(set via URL)';
+            document.getElementById('dbName').textContent = dbConfig.db || '(set via URL)';
             
             const passSpan = document.getElementById('dbPass');
             if (dbConfig.password) {
                 passSpan.textContent = '••••••••';
                 passSpan.title = dbConfig.password;
             } else {
-                passSpan.textContent = '(none)';
+                passSpan.textContent = '(set via URL)';
             }
         }
 
-        // Load content in iframe (Adminer only, WordPress opens in new tab)
         function loadContent() {
-            const iframe = document.getElementById('mainFrame');
-            const wpInfoBanner = document.getElementById('wpInfoBanner');
-            
-            if (currentMode === 'wordpress') {
-                // WordPress: show info banner and iframe with helpful message
-                iframe.src = 'about:blank';
-                const doc = iframe.contentWindow.document;
-                doc.open();
-                doc.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head><style>
-                        body { font-family: system-ui; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f8f9fa; }
-                        .card { text-align: center; padding: 40px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 500px; }
-                        h2 { color: #21759b; margin-bottom: 16px; }
-                        p { color: #666; margin-bottom: 20px; }
-                        .url { background: #e9ecef; padding: 12px; border-radius: 8px; font-family: monospace; word-break: break-all; margin: 16px 0; }
-                        button { background: #21759b; color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; }
-                        button:hover { background: #135e7a; }
-                    </style></head>
-                    <body>
-                        <div class="card">
-                            <h2>📝 WordPress</h2>
-                            <p>WordPress cannot be displayed in an iframe due to security restrictions (X-Frame-Options).</p>
-                            <div class="url">${wpUrl}</div>
-                            <button onclick="window.open('${wpUrl}', '_blank')">Open WordPress in New Tab →</button>
-                            <p style="margin-top: 20px; font-size: 12px;">💡 Use Adminer mode to manage your database</p>
-                        </div>
-                    </body>
-                    </html>
-                `);
-                doc.close();
-                wpInfoBanner.style.display = 'flex';
-            } else {
-                // Adminer mode - build URL with credentials
-                const adminerUrl = new URL(adminerBase);
+            if (currentMode === 'adminer' && (dbConfig.host || dbConfig.user || dbConfig.db)) {
+                const iframe = document.getElementById('mainFrame');
+                const adminerUrl = new URL(ADMINER_URL);
                 
+                // Adminer uses these parameter names
                 if (dbConfig.host) adminerUrl.searchParams.set('server', dbConfig.host);
                 if (dbConfig.user) adminerUrl.searchParams.set('username', dbConfig.user);
                 if (dbConfig.password) adminerUrl.searchParams.set('password', dbConfig.password);
                 if (dbConfig.db) adminerUrl.searchParams.set('db', dbConfig.db);
                 
                 iframe.src = adminerUrl.toString();
+            } else if (currentMode === 'adminer') {
+                // No credentials provided, show default Adminer
+                document.getElementById('mainFrame').src = ADMINER_URL;
             }
         }
 
-        // Switch mode
         function setMode(mode) {
             currentMode = mode;
             updateUrlParams();
@@ -585,7 +558,6 @@ http://localhost:8081?server=mysql-wp&username=wordpress&password=wp123&db=wordp
             loadContent();
         }
 
-        // Update URL parameters
         function updateUrlParams() {
             const url = new URL(window.location.href);
             url.searchParams.delete('wp');
@@ -595,42 +567,23 @@ http://localhost:8081?server=mysql-wp&username=wordpress&password=wp123&db=wordp
                 url.searchParams.set('wp', '');
             } else {
                 url.searchParams.set('adminer', '');
-            }
-            
-            if (dbConfig.host && dbConfig.host !== 'mysql-wp') {
-                url.searchParams.set('host', dbConfig.host);
-            }
-            if (dbConfig.user && dbConfig.user !== 'wordpress') {
-                url.searchParams.set('user', dbConfig.user);
-            }
-            if (dbConfig.password && dbConfig.password !== 'wp123') {
-                url.searchParams.set('password', dbConfig.password);
-            }
-            if (dbConfig.db && dbConfig.db !== 'wordpress') {
-                url.searchParams.set('db', dbConfig.db);
-            }
-            if (wpUrl !== 'http://localhost:8080') {
-                url.searchParams.set('wpUrl', wpUrl);
+                if (dbConfig.host) url.searchParams.set('host', dbConfig.host);
+                if (dbConfig.user) url.searchParams.set('user', dbConfig.user);
+                if (dbConfig.password) url.searchParams.set('password', dbConfig.password);
+                if (dbConfig.db) url.searchParams.set('db', dbConfig.db);
             }
             
             window.history.replaceState({}, '', url.toString());
         }
 
         function resetParams() {
-            dbConfig = {
-                host: 'mysql-wp',
-                user: 'wordpress',
-                password: 'wp123',
-                db: 'wordpress'
-            };
-            wpUrl = 'http://localhost:8080';
+            dbConfig = { host: '', user: '', password: '', db: '' };
             currentMode = 'wordpress';
-            
             const cleanUrl = window.location.pathname;
             window.history.replaceState({}, '', cleanUrl);
             updateUI();
             loadContent();
-            showToast('↺ Reset to default settings');
+            showToast('↺ Reset to default');
         }
 
         function copyShareableLink() {
@@ -652,55 +605,61 @@ http://localhost:8081?server=mysql-wp&username=wordpress&password=wp123&db=wordp
             showToast('🔗 Link copied!');
         }
 
-        function copyConnectionString() {
-            const connUrl = `${adminerBase}?server=${dbConfig.host}&username=${dbConfig.user}&password=${dbConfig.password}&db=${dbConfig.db}`;
-            navigator.clipboard.writeText(connUrl);
+        function copyAdminerUrl() {
+            const adminerUrl = new URL(ADMINER_URL);
+            if (dbConfig.host) adminerUrl.searchParams.set('server', dbConfig.host);
+            if (dbConfig.user) adminerUrl.searchParams.set('username', dbConfig.user);
+            if (dbConfig.password) adminerUrl.searchParams.set('password', dbConfig.password);
+            if (dbConfig.db) adminerUrl.searchParams.set('db', dbConfig.db);
+            navigator.clipboard.writeText(adminerUrl.toString());
             showToast('🔗 Adminer URL copied!');
         }
 
         function showCredentials() {
-            alert(`Database Credentials:\n\nHost: ${dbConfig.host}\nUser: ${dbConfig.user}\nPassword: ${dbConfig.password}\nDatabase: ${dbConfig.db}\n\nWordPress URL: ${wpUrl}\nAdminer: ${adminerBase}`);
+            alert(`Database Connection:\n\nHost: ${dbConfig.host || '(not set)'}\nUser: ${dbConfig.user || '(not set)'}\nPassword: ${dbConfig.password ? '••••••••' : '(not set)'}\nDatabase: ${dbConfig.db || '(not set)'}\n\nWordPress Local URL: ${wpLocalUrl}\nAdminer URL: ${ADMINER_URL}`);
         }
 
         function copyDockerCommand() {
-            const cmd = `# Start everything with Docker
+            const cmd = `# Run WordPress + MySQL locally
 docker network create wp-network
 
 docker run -d --name mysql-wp --network wp-network \\
   -e MYSQL_ROOT_PASSWORD=rootpass \\
-  -e MYSQL_DATABASE=${dbConfig.db} \\
-  -e MYSQL_USER=${dbConfig.user} \\
-  -e MYSQL_PASSWORD=${dbConfig.password} \\
+  -e MYSQL_DATABASE=wordpress \\
+  -e MYSQL_USER=wordpress \\
+  -e MYSQL_PASSWORD=wp123 \\
   -p 3306:3306 mysql:8
 
 docker run -d --name wordpress --network wp-network \\
   -e WORDPRESS_DB_HOST=mysql-wp:3306 \\
-  -e WORDPRESS_DB_USER=${dbConfig.user} \\
-  -e WORDPRESS_DB_PASSWORD=${dbConfig.password} \\
-  -e WORDPRESS_DB_NAME=${dbConfig.db} \\
+  -e WORDPRESS_DB_USER=wordpress \\
+  -e WORDPRESS_DB_PASSWORD=wp123 \\
+  -e WORDPRESS_DB_NAME=wordpress \\
   -p 8080:80 wordpress:latest
 
 docker run -d --name adminer --network wp-network \\
   -p 8081:8080 adminer:latest
 
-# Open WordPress: http://localhost:8080
-# Open Adminer: http://localhost:8081?server=mysql-wp&username=${dbConfig.user}&password=${dbConfig.password}&db=${dbConfig.db}`;
+# Then visit: http://localhost:8080 for WordPress
+# Adminer: http://localhost:8081?server=mysql-wp&username=wordpress&password=wp123&db=wordpress`;
             
             navigator.clipboard.writeText(cmd);
             showToast('🐳 Docker commands copied!');
         }
 
         function openInNewTab() {
-            if (currentMode === 'wordpress') {
-                window.open(wpUrl, '_blank');
-            } else {
-                const adminerUrl = new URL(adminerBase);
+            if (currentMode === 'adminer') {
+                const adminerUrl = new URL(ADMINER_URL);
                 if (dbConfig.host) adminerUrl.searchParams.set('server', dbConfig.host);
                 if (dbConfig.user) adminerUrl.searchParams.set('username', dbConfig.user);
                 if (dbConfig.password) adminerUrl.searchParams.set('password', dbConfig.password);
                 if (dbConfig.db) adminerUrl.searchParams.set('db', dbConfig.db);
                 window.open(adminerUrl.toString(), '_blank');
             }
+        }
+
+        function openWordPressTab() {
+            window.open(wpLocalUrl, '_blank');
         }
 
         function toggleGuide() {
@@ -731,9 +690,10 @@ docker run -d --name adminer --network wp-network \\
         
         console.log('%c📝 WordPress + Adminer Manager', 'color: #1a472a; font-size: 14px; font-weight: bold;');
         console.log('URL parameters:');
-        console.log('  ?wp                          - WordPress mode (opens in new tab)');
+        console.log('  ?wp                          - WordPress info mode');
         console.log('  ?adminer                     - Adminer mode');
         console.log('  ?adminer&host=localhost&user=root&password=secret&db=mydb');
+        console.log('\n🌐 Live Adminer URL: ' + ADMINER_URL);
     </script>
 </body>
 </html>
